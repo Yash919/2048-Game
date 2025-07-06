@@ -105,8 +105,11 @@ function move(direction) {
         addRandomTile();
         updateBoard();
     }
-    else {
-        console.log("No tiles moved")
+    
+    if (checkGameOver()) {
+        setTimeout(() => {
+            alert(`Game Over! Your score is ${score}`);
+        }, 100); // Delay so tile appears before alert
     }
 
 }
@@ -146,6 +149,30 @@ document.addEventListener("keydown", (e) => {
             break;
     }
 })
+
+// Game Over Check Functionality
+function checkGameOver() {
+    const hasEmptyTile = tiles.some(tile => tile.dataset.value == 0);
+    if (hasEmptyTile) return false;
+
+    for (let i = 0; i < 16; i++) {
+        const current = parseInt(tiles[i].dataset.value);
+
+        // Right neighbor
+        if (i % 4 !== 3) {
+            const right = parseInt(tiles[i + 1].dataset.value);
+            if (current === right) return false;
+        }
+
+        // Bottom neighbor
+        if (i < 12) {
+            const down = parseInt(tiles[i + 4].dataset.value);
+            if (current === down) return false;
+        }
+    }
+
+    return true; // No moves left
+}
 
 initializeGame();
 restartButton.addEventListener("click",initializeGame);
